@@ -1,0 +1,19 @@
+{
+    "name": "restify_api",
+    "version": "1.0.0",
+    "description": "A basic restify API",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js",
+        "dev": "nodemon index.js"
+    },
+    "author": "Jayanth Manikanta",
+    "license": "ISC",
+    "dependencies": {
+        "mongoose": "^5.3.15",
+        "mongoose-timestamp": "^0.6.0",
+        "nodemon": "^1.18.7",
+        "restify": "^7.2.3",
+        "restify-errors": "^6.1.1"
+    }
+}
