@@ -1,6 +1,6 @@
 // Import modules
-const errors = require("restify-errors"); //restify errors module
-const Customer = require("../models/Customer");
+const errors = require("restify-errors"); // restify errors module
+const Customer = require("../models/Customer"); // importing customer from Customer model
 
 // A basic customers route
 module.exports = server => {
@@ -12,6 +12,24 @@ module.exports = server => {
       next();
     } catch (err) {
       return next(new errors.InvalidContentError(err));
+    }
+  });
+
+  // Declaring an id with type string
+  //const id = "";
+  // GET request for finding a particular customer with ID
+  server.get("/customers/:id", async (req, res, next) => {
+    try {
+      const customers = await Customer.findById(req.params.id);
+      res.send(customers);
+      next();
+    } catch (err) {
+      // TODO: this is currently returning a null, need to dig into this issue
+      return next(
+        new errors.ResourceNotFoundError(
+          `There is no record with the following id: ${req.params.id}`
+        )
+      );
     }
   });
 
@@ -33,13 +51,39 @@ module.exports = server => {
       email,
       balance
     });
-
+    // Create the customer from Customer model and return created status 201
     try {
       const newCustomer = await customer.save();
       res.send(201);
       next();
     } catch (err) {
       return next(new errors.InternalError(err.message));
+    }
+  });
+
+  // Update a customer
+  server.put("/customers/:id", async (req, res, next) => {
+    // Check whether we are passing JSON
+    if (!req.is("application/json")) {
+      return next(
+        new errors.InvalidContentError("Expects an 'application/json' value")
+      );
+    }
+    // Update customer based on id
+    try {
+      const customer = await Customer.findOneAndUpdate(
+        { _id: req.params.id },
+        req.body
+      );
+      res.send(200);
+      next();
+    } catch (err) {
+      // TODO: this is currently returning a null, need to dig into this issue
+      return next(
+        new errors.ResourceNotFoundError(
+          `There is no record with the following id: ${req.params.id}`
+        )
+      );
     }
   });
 };
